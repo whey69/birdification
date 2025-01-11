@@ -1,0 +1,3 @@
+praw
+pyvips
+python-dotenv
