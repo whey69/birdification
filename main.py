@@ -25,7 +25,6 @@ HEIGHT = 8
 CELL_SIZE = SIZE / WIDTH
 if (input("download top images? (y/N): ") == "y"):
   reddit = praw.Reddit(
-    # client_id="XmjPO5BB5aLW5Dub3Npm8A",
     client_id=os.getenv("CLIENT_ID"),
     client_secret=os.getenv("CLIENT_SECRET"),
     user_agent="python:birdification:v1.0 (by u/johncraft2003)"
