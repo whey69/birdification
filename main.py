@@ -59,13 +59,16 @@ if not imgs:
   print("CONFUSION!!!!!!!!!!! no images????")
   exit()
 
-# assuming tiles are squared
+# assuming tiles are square
 canvas = pyvips.Image.black(SIZE, SIZE)
 
 for k, i in enumerate(imgs):
   try:
     image = pyvips.Image.new_from_file(i, access="sequential")
     image = image.resize(CELL_SIZE / image.width, vscale=CELL_SIZE / image.height)
+    if (image.bands == 4):
+      # todo: figure out how to make it checkerboard thing
+      image = image.extract_band(0, n=3)
 
     index = int(os.path.basename(i).split(".")[0])
     x = index % HEIGHT
