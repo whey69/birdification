@@ -34,7 +34,7 @@ if (input("download top images? (y/N): ") == "y"):
   s = False
   for k, i in enumerate(submissions):
     # print(f"{k + 1}: {i.url}")
-    if (re.match("https://i\.redd\.it/[a-zA-Z0-9]+\.(jpeg|png)", i.url)):
+    if (re.match("https://i\.redd\.it/[a-zA-Z0-9]+\.(jpeg|png|jpg|gif)", i.url)):
       # print("valid")
       download(i.url, f"images/{k}.jpeg") # assume jpeg since its the majority 
     elif (re.match("https://www\.reddit\.com/gallery/[a-zA-Z0-9]+", i.url)): 
