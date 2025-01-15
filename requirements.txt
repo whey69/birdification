@@ -1,3 +1,4 @@
 praw
 pyvips
 python-dotenv
+ffmpeg-python

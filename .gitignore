@@ -6,3 +6,4 @@ output.png
 # python
 .env
 __pycache__/
+.venv

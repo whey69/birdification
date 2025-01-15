@@ -1,4 +1,4 @@
-#!/bin/python3
+##!/bin/python3
 
 import praw
 import re
@@ -6,6 +6,7 @@ import urllib.request
 import pyvips
 import os
 import math
+import ffmpeg
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,6 +19,16 @@ def downloadGallery(post:praw.Reddit.submission, name):
   media_id = post.gallery_data['items'][0]["media_id"]
   url = i.media_metadata[media_id]["s"]["u"]
   download(url, name)
+  
+def downloadVideo(post:praw.Reddit.submission, name):
+  download(post.url + "/DASH_360.mp4", name + ".temp")
+  if (ffmpeg != None):
+    stream = ffmpeg.input(name + ".temp")
+    stream = ffmpeg.output(stream, name, **{'frames:v': 1})
+    ffmpeg.run(stream)
+    os.remove(name + ".temp")
+  else:
+    print("FAILITION!!!!!! ffmpeg not found")
 
 SIZE = 2048
 WIDTH = 8
@@ -40,6 +51,9 @@ if (input("download top images? (y/N): ") == "y"):
     elif (re.match("https://www\.reddit\.com/gallery/[a-zA-Z0-9]+", i.url)): 
       print(f"found a gallery: {i.title} ({i.url}). downloading the first photo")
       downloadGallery(i, f"images/{k}.jpeg") # gallery things seem to return webp 
+    elif (re.match("https://v\.redd\.it/[a-zA-Z0-9]+", i.url)):
+      print(f"found video: {i.title} ({i.url}). downloading the first frame")
+      downloadVideo(i, f"images/{k}.jpeg")
     else:
       print(f"found controversial post: {i.title} ({i.url}). ignoring for now")
       s = True
