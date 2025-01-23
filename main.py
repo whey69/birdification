@@ -60,7 +60,7 @@ if (input("download top images? (y/N): ") == "y"):
       # print(f"found video: {i.title} ({i.url}). downloading the first frame")
       downloadVideo(i, f"images/{k}.jpeg")
     elif (re.match("https://i\.imgur\.com/[a-zA-Z0-9]+", i.url)):
-      print(f"DEBUG: imgur {i.url} {k}")
+      # print(f"DEBUG: imgur {i.url} {k}")
       download(i.url, f"images/{k}.jpeg")
     else:
       print(f"found controversial post: {i.title} ({i.url}). ignoring for now")
