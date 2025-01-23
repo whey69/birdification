@@ -1,4 +1,4 @@
-##!/bin/python3
+#!/bin/python3
 
 import praw
 import re
@@ -41,6 +41,11 @@ if (input("download top images? (y/N): ") == "y"):
     user_agent="python:birdification:v1.0 (by u/johncraft2003)"
   )
 
+  # setup opener for imgur
+  opener = urllib.request.build_opener()
+  opener.addheaders = [("User-Agent", 'curl/8.11.1')]
+  urllib.request.install_opener(opener)
+  
   submissions = reddit.subreddit("birdification").top(limit=WIDTH * HEIGHT, time_filter="month")
   s = False
   for k, i in enumerate(submissions):
@@ -49,11 +54,14 @@ if (input("download top images? (y/N): ") == "y"):
       # print("valid")
       download(i.url, f"images/{k}.jpeg") # assume jpeg since its the majority 
     elif (re.match("https://www\.reddit\.com/gallery/[a-zA-Z0-9]+", i.url)): 
-      print(f"found a gallery: {i.title} ({i.url}). downloading the first photo")
+      # print(f"found a gallery: {i.title} ({i.url}). downloading the first photo")
       downloadGallery(i, f"images/{k}.jpeg") # gallery things seem to return webp 
     elif (re.match("https://v\.redd\.it/[a-zA-Z0-9]+", i.url)):
-      print(f"found video: {i.title} ({i.url}). downloading the first frame")
+      # print(f"found video: {i.title} ({i.url}). downloading the first frame")
       downloadVideo(i, f"images/{k}.jpeg")
+    elif (re.match("https://i\.imgur\.com/[a-zA-Z0-9]+", i.url)):
+      print(f"DEBUG: imgur {i.url} {k}")
+      download(i.url, f"images/{k}.jpeg")
     else:
       print(f"found controversial post: {i.title} ({i.url}). ignoring for now")
       s = True

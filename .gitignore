@@ -1,9 +1,11 @@
 # program specific ignores
 images/**
 images
-output.png
+output*.png
 
 # python
 .env
 __pycache__/
 .venv
+
+run
