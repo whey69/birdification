@@ -24,7 +24,7 @@ def downloadVideo(post:praw.Reddit.submission, name):
   download(post.url + "/DASH_360.mp4", name + ".temp")
   if (ffmpeg != None):
     stream = ffmpeg.input(name + ".temp")
-    stream = ffmpeg.output(stream, name, **{'frames:v': 1})
+    stream = ffmpeg.output(stream, name, loglevel="quiet", **{'frames:v': 1})
     ffmpeg.run(stream)
     os.remove(name + ".temp")
   else:
@@ -49,21 +49,28 @@ if (input("download top images? (y/N): ") == "y"):
   submissions = reddit.subreddit("birdification").top(limit=WIDTH * HEIGHT, time_filter="month")
   s = False
   for k, i in enumerate(submissions):
-    # print(f"{k + 1}: {i.url}")
-    if (re.match("https://i\.redd\.it/[a-zA-Z0-9]+\.(jpeg|png|jpg|gif)", i.url)):
-      # print("valid")
-      download(i.url, f"images/{k}.jpeg") # assume jpeg since its the majority 
-    elif (re.match("https://www\.reddit\.com/gallery/[a-zA-Z0-9]+", i.url)): 
-      # print(f"found a gallery: {i.title} ({i.url}). downloading the first photo")
-      downloadGallery(i, f"images/{k}.jpeg") # gallery things seem to return webp 
-    elif (re.match("https://v\.redd\.it/[a-zA-Z0-9]+", i.url)):
-      # print(f"found video: {i.title} ({i.url}). downloading the first frame")
-      downloadVideo(i, f"images/{k}.jpeg")
-    elif (re.match("https://i\.imgur\.com/[a-zA-Z0-9]+", i.url)):
-      # print(f"DEBUG: imgur {i.url} {k}")
-      download(i.url, f"images/{k}.jpeg")
-    else:
-      print(f"found controversial post: {i.title} ({i.url}). ignoring for now")
+    print(f"downloading {k}: {i.title}: {i.url}")
+    if (os.path.exists(f"images/{k}.jpeg")):
+      print("exists, skipping")
+      continue
+    try:
+      if (re.match("https://i\.redd\.it/[a-zA-Z0-9]+\.(jpeg|png|jpg|gif)", i.url)):
+        # print("valid")
+        download(i.url, f"images/{k}.jpeg") # assume jpeg since its the majority 
+      elif (re.match("https://www\.reddit\.com/gallery/[a-zA-Z0-9]+", i.url)): 
+        # print(f"found a gallery: {i.title} ({i.url}). downloading the first photo")
+        downloadGallery(i, f"images/{k}.jpeg") # gallery things seem to return webp 
+      elif (re.match("https://v\.redd\.it/[a-zA-Z0-9]+", i.url)):
+        # print(f"found video: {i.title} ({i.url}). downloading the first frame")
+        downloadVideo(i, f"images/{k}.jpeg")
+      elif (re.match("https://i\.imgur\.com/[a-zA-Z0-9]+", i.url)):
+        # print(f"DEBUG: imgur {i.url} {k}")
+        download(i.url, f"images/{k}.jpeg")
+      else:
+        print(f"found controversial post: {i.title} ({i.url}). ignoring for now")
+        s = True
+    except (Exception) as e:
+      print(f"EXCEPTION!!!!! details: \"{e}\"")
       s = True
 
   if (s):
